@@ -127,7 +127,7 @@ type Channel struct {
 	//     <a href="http://www.apple.com">Apple</a>
 	//   ]]>
 	//
-	Description *Description `xml:"https://www.rssboard.org/rss-specification description"`
+	Description Description `xml:"https://www.rssboard.org/rss-specification description"`
 
 	// # RSS 2.0 (optional)
 	//

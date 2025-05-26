@@ -22,7 +22,7 @@ var SpecSampleExpected = RSS{
 		},
 		Title: "NASA Space Station News",
 		Link:  "http://www.nasa.gov/",
-		Description: &Description{
+		Description: Description{
 			XMLName: xml.Name{
 				Space: "https://www.rssboard.org/rss-specification",
 				Local: "description",
@@ -223,7 +223,7 @@ var MoreComplexSampleExpected = RSS{
 		},
 		Title: "Epic Podcast",
 		Link:  "http://www.yodaspin.com",
-		Description: &Description{
+		Description: Description{
 			XMLName: xml.Name{
 				Space: "https://www.rssboard.org/rss-specification",
 				Local: "description",

@@ -26,7 +26,7 @@ var ApplePodcastSampleExpected RSSPodcast = RSSPodcast{
 			},
 			Title: "Hiking Treks",
 			Link:  "https://www.apple.com/itunes/podcasts/",
-			Description: &rss.Description{
+			Description: rss.Description{
 				XMLName: xml.Name{
 					Space: "https://www.rssboard.org/rss-specification",
 					Local: "description",
@@ -552,7 +552,7 @@ var MoreComplexSampleExpected = RSSPodcast{
 			},
 			Title: "Epic Podcast",
 			Link:  "http://www.yodaspin.com",
-			Description: &rss.Description{
+			Description: rss.Description{
 				XMLName: xml.Name{
 					Space: "https://www.rssboard.org/rss-specification",
 					Local: "description",
@@ -850,7 +850,7 @@ var Podcasting20ExampleExpected RSSPodcast = RSSPodcast{
 			},
 			Title: "Podcasting 2.0 Namespace Example",
 			Link:  "http://example.com/podcast",
-			Description: &rss.Description{
+			Description: rss.Description{
 				XMLName: xml.Name{
 					Space: "https://www.rssboard.org/rss-specification",
 					Local: "description",
