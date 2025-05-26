@@ -1,4 +1,5 @@
-// Package rss implements basic types for RSS 2.0 feeds.
+// Package rss implements basic types for RSS 2.0 feeds. You should be able to
+// use this to generate and parse simple RSS feeds if you wish.
 //
 // https://www.rssboard.org/rss-specification
 //

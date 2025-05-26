@@ -1,4 +1,4 @@
-module github.com/jaydenm/podcast
+module github.com/jaydenmilne/podcast
 
 go 1.21
 
