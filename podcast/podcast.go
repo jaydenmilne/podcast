@@ -6,7 +6,7 @@ package podcast
 import (
 	"encoding/xml"
 
-	"github.com/jaydenm/rssfeed/rss"
+	"github.com/jaydenm/podcast/rss"
 )
 
 const ItunesNamespaceURL = "http://www.itunes.com/dtds/podcast-1.0.dtd"

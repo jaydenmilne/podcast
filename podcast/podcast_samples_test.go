@@ -4,7 +4,7 @@ import (
 	_ "embed"
 	"encoding/xml"
 
-	"github.com/jaydenm/rssfeed/rss"
+	"github.com/jaydenm/podcast/rss"
 )
 
 //go:embed samples/apple.rss

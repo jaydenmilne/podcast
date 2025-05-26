@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
-	"github.com/jaydenm/rssfeed/rss"
+	"github.com/jaydenm/podcast/rss"
 )
 
 var testCases = []struct {
