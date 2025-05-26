@@ -1,84 +1,69 @@
 package rss
 
 import (
+	"bytes"
 	"encoding/xml"
 	"os"
 	"testing"
 
-	"github.com/gdexlab/go-render/render"
 	"github.com/google/go-cmp/cmp"
 )
 
-func helper(a any) {
-	out, _ := os.Create("test.txt")
-	out.Write([]byte(render.AsCode(a)))
-	out.Close()
+var testCases = []struct {
+	name     string
+	testFile []byte
+	expected RSS
+}{
+	{"rss_spec_sample", SpecSampleXML, SpecSampleExpected},
+	{"more_complex_sample", MoreComplexSample, MoreComplexSampleExpected},
 }
 
-func TestUnmarshalSpecSample(t *testing.T) {
-	var doc RSS
+func TestUnmarshal(t *testing.T) {
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			var doc RSS
 
-	if err := xml.Unmarshal([]byte(SpecSampleXML), &doc); err != nil {
-		t.Fatalf("failure to unmarshal: %s", err)
-	}
+			decoder := GetDecoder(bytes.NewReader(tc.testFile))
 
-	if !cmp.Equal(SpecSampleExpected, doc) {
-		t.Errorf("document didn't match! %s", cmp.Diff(SpecSampleExpected, doc))
-	}
-}
+			if err := decoder.Decode(&doc); err != nil {
+				t.Fatalf("failure to unmarshal: %s", err)
+			}
 
-func TestMarshalSpecRoundTrip(t *testing.T) {
-	var doc RSS
-
-	if err := xml.Unmarshal([]byte(SpecSampleXML), &doc); err != nil {
-		t.Fatalf("failure to unmarshal: %s", err)
-	}
-	var err error
-	var marshalled []byte
-	if marshalled, err = xml.Marshal(&doc); err != nil {
-		t.Fatalf("failure to marshal: %s", err)
-
-	}
-	var docRoundTwo RSS
-	if err := xml.Unmarshal(marshalled, &docRoundTwo); err != nil {
-		t.Fatalf("failure to unmarshal: %s", err)
-	}
-
-	if !cmp.Equal(doc, docRoundTwo) {
-		t.Errorf("document didn't match! %s", cmp.Diff(doc, docRoundTwo))
+			if !cmp.Equal(tc.expected, doc) {
+				t.Errorf("document didn't match! %s", cmp.Diff(tc.expected, doc))
+			}
+		})
 	}
 }
 
-func TestUnmarshalComplexSample(t *testing.T) {
-	var doc RSS
+func TestMarshalRoundTrip(t *testing.T) {
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			var doc RSS
 
-	if err := xml.Unmarshal([]byte(MoreComplexSample), &doc); err != nil {
-		t.Fatalf("failure to unmarshal: %s", err)
-	}
+			decoder := GetDecoder(bytes.NewReader(tc.testFile))
 
-	if !cmp.Equal(MoreComplexSampleExpected, doc) {
-		t.Errorf("document didn't match! %s", cmp.Diff(MoreComplexSampleExpected, doc))
-	}
-}
+			if err := decoder.Decode(&doc); err != nil {
+				t.Fatalf("failure to unmarshal: %s", err)
+			}
+			var err error
+			var marshalled []byte
+			if marshalled, err = xml.Marshal(&doc); err != nil {
+				t.Fatalf("failure to marshal: %s", err)
 
-func TestMarshalComplexRoundTrip(t *testing.T) {
-	var doc RSS
+			}
+			var docRoundTwo RSS
+			decoder2 := GetDecoder(bytes.NewReader(marshalled))
 
-	if err := xml.Unmarshal([]byte(MoreComplexSample), &doc); err != nil {
-		t.Fatalf("failure to unmarshal: %s", err)
-	}
-	var err error
-	var marshalled []byte
-	if marshalled, err = xml.Marshal(&doc); err != nil {
-		t.Fatalf("failure to marshal: %s", err)
+			if err := decoder2.Decode(&docRoundTwo); err != nil {
+				t.Fatalf("failure to unmarshal: %s", err)
+			}
 
-	}
-	var docRoundTwo RSS
-	if err := xml.Unmarshal(marshalled, &docRoundTwo); err != nil {
-		t.Fatalf("failure to unmarshal: %s", err)
-	}
+			if !cmp.Equal(doc, docRoundTwo) {
+				t.Errorf("document didn't match! %s", cmp.Diff(doc, docRoundTwo))
+			}
 
-	if !cmp.Equal(doc, docRoundTwo) {
-		t.Errorf("document didn't match! %s", cmp.Diff(doc, docRoundTwo))
+			os.WriteFile("feed.xml", marshalled, 0644)
+		})
 	}
 }

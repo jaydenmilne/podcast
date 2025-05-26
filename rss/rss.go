@@ -22,6 +22,7 @@ package rss
 
 import (
 	"encoding/xml"
+	"io"
 )
 
 // # RSS 2.0 (required)
@@ -52,7 +53,7 @@ type RSS struct {
 }
 
 type Channel struct {
-	XMLName xml.Name `xml:"channel"`
+	XMLName xml.Name `xml:"https://www.rssboard.org/rss-specification channel"`
 
 	// # RSS 2.0 (required)
 	//
@@ -75,7 +76,7 @@ type Channel struct {
 	//
 	// If you include a long list of keywords in an attempt to game podcast
 	// search, your show may be removed from the Apple directory.
-	Title string `xml:"title"`
+	Title string `xml:"https://www.rssboard.org/rss-specification title"`
 
 	// # RSS 2.0 (required)
 	//
@@ -100,7 +101,7 @@ type Channel struct {
 	//  <link>
 	//   http://www.example.com/podcast
 	//  </link>
-	Link string `xml:"link"`
+	Link string `xml:"https://www.rssboard.org/rss-specification link"`
 
 	// # RSS 2.0 (required)
 	//
@@ -125,7 +126,7 @@ type Channel struct {
 	//     <a href="http://www.apple.com">Apple</a>
 	//   ]]>
 	//
-	Description *Description `xml:"description"`
+	Description *Description `xml:"https://www.rssboard.org/rss-specification description"`
 
 	// # RSS 2.0 (optional)
 	//
@@ -153,7 +154,7 @@ type Channel struct {
 	// Invalid language codes will cause your feed to fail Apple validation.
 	//
 	// [ISO 639]: https://www.loc.gov/standards/iso639-2/php/code_list.php
-	Language string `xml:"language,omitempty"`
+	Language string `xml:"https://www.rssboard.org/rss-specification language,omitempty"`
 
 	// # RSS 2.0 (optional)
 	//
@@ -169,7 +170,7 @@ type Channel struct {
 	// If your show is copyrighted you should use this tag. For example:
 	//  <copyright>Copyright 1995-2024 John John Appleseed</copyright>
 	//
-	Copyright string `xml:"copyright,omitempty"`
+	Copyright string `xml:"https://www.rssboard.org/rss-specification copyright,omitempty"`
 
 	// # RSS 2.0 (optional)
 	//
@@ -177,14 +178,14 @@ type Channel struct {
 	//
 	// Example:
 	//  geo@herald.com (George Matesky)
-	ManagingEditor string `xml:"managingEditor,omitempty"`
+	ManagingEditor string `xml:"https://www.rssboard.org/rss-specification managingEditor,omitempty"`
 
 	// # RSS 2.0 (optional)
 	//
 	// Email address for person responsible for technical issues relating to channel.
 	//
 	// Example: `betty@herald.com (Betty Guernsey)`
-	WebMaster string `xml:"webMaster,omitempty"`
+	WebMaster string `xml:"https://www.rssboard.org/rss-specification webMaster,omitempty"`
 
 	// # RSS 2.0 (optional)
 	//
@@ -199,7 +200,7 @@ type Channel struct {
 	//  Sat, 07 Sep 2002 09:42:31 GMT
 	// [RFC 822]: https://www.ietf.org/rfc/rfc822.txt
 
-	PubDate RFC2822Date `xml:"pubDate,omitempty"`
+	PubDate RFC2822Date `xml:"https://www.rssboard.org/rss-specification pubDate,omitempty"`
 
 	// # RSS 2.0 (optional)
 	//
@@ -209,7 +210,7 @@ type Channel struct {
 	//  Sat, 07 Sep 2002 09:42:31 GMT
 	// [RFC 822]: https://www.ietf.org/rfc/rfc822.txt
 
-	LastBuildDate RFC2822Date `xml:"lastBuildDate,omitempty"`
+	LastBuildDate RFC2822Date `xml:"https://www.rssboard.org/rss-specification lastBuildDate,omitempty"`
 
 	// # RSS 2.0 (optional)
 	//
@@ -219,7 +220,7 @@ type Channel struct {
 	// Example:
 	//  <category>Newspapers</category>
 	//
-	Categories []Category `xml:"category,omitempty"`
+	Categories []Category `xml:"https://www.rssboard.org/rss-specification category,omitempty"`
 
 	// # RSS 2.0 (optional)
 	//
@@ -233,7 +234,7 @@ type Channel struct {
 	// Specifies the program or hosting provider used to create the RSS feed.
 	//
 	// Hosting providers use this tag to identify themselves as the creator of an RSS feed.
-	Generator string `xml:"generator,omitempty"`
+	Generator string `xml:"https://www.rssboard.org/rss-specification generator,omitempty"`
 
 	// # RSS 2.0 (optional)
 	//
@@ -245,7 +246,7 @@ type Channel struct {
 	// Example:
 	//  https://www.rssboard.org/rss-specification
 	//
-	Docs string `xml:"docs,omitempty"`
+	Docs string `xml:"https://www.rssboard.org/rss-specification docs,omitempty"`
 
 	// # RSS 2.0 (optional)
 	//
@@ -257,7 +258,7 @@ type Channel struct {
 	//  http://blogs.law.harvard.edu/tech/rss
 	//
 	// [here]: https://www.rssboard.org/rss-specification#ltcloudgtSubelementOfLtchannelgt
-	Cloud *Cloud `xml:"cloud,omitempty"`
+	Cloud *Cloud `xml:"https://www.rssboard.org/rss-specification cloud,omitempty"`
 
 	// # RSS 2.0 (optional)
 	//
@@ -270,7 +271,7 @@ type Channel struct {
 	// Example:
 	//  <ttl>60</ttl>
 	//
-	TTL int `xml:"ttl,omitempty"`
+	TTL int `xml:"https://www.rssboard.org/rss-specification ttl,omitempty"`
 
 	// # RSS 2.0 (optional)
 	//
@@ -279,40 +280,40 @@ type Channel struct {
 	//
 	// [here]: https://cyber.harvard.edu/rss/rss.html#ltttlgtSubelementOfLtchannelgt
 	//
-	Image *Image `xml:"image,omitempty"`
+	Image *Image `xml:"https://www.rssboard.org/rss-specification image,omitempty"`
 
 	// # RSS 2.0 (optional)
 	//
 	// The [PICS] rating for the channel.
 	//
 	// [PICS]: http://www.w3.org/PICS/
-	Rating string `xml:"rating,omitempty"`
+	Rating string `xml:"https://www.rssboard.org/rss-specification rating,omitempty"`
 
 	// TextInput specifies a text input box that can be displayed with the
 	// channel. More info [here].
 	//
 	// [here]: https://cyber.harvard.edu/rss/rss.html#ltimagegtSubelementOfLtchannelgt
-	TextInput *TextInput `xml:"textInput,omitempty"`
+	TextInput *TextInput `xml:"https://www.rssboard.org/rss-specification textInput,omitempty"`
 
 	// SkipHours is a hint for aggregators telling them which hours they can
 	// skip. More info [here].
 	//
 	// [here]: https://cyber.harvard.edu/rss/skipHoursDays.html#skiphours
 	//
-	SkipHours *SkipHours `xml:"skipHours,omitempty"`
+	SkipHours *SkipHours `xml:"https://www.rssboard.org/rss-specification skipHours,omitempty"`
 
 	// A hint for aggregators telling them which days they can skip. More info
 	// [here].
 	//
 	// [here]: https://cyber.harvard.edu/rss/skipHoursDays.html#skipdays
 	//
-	SkipDays *SkipDays `xml:"skipDays,omitempty"`
+	SkipDays *SkipDays `xml:"https://www.rssboard.org/rss-specification skipDays,omitempty"`
 
-	Items []Item `xml:"item"`
+	Items []Item `xml:"https://www.rssboard.org/rss-specification item"`
 }
 
 type Description struct {
-	XMLName xml.Name `xml:"description"`
+	XMLName xml.Name `xml:"https://www.rssboard.org/rss-specification description"`
 	Value   string   `xml:",cdata"`
 }
 
@@ -331,7 +332,7 @@ const (
 //
 // [original docs]: https://cyber.harvard.edu/rss/soapMeetsRss.html#rsscloudInterface
 type Cloud struct {
-	XMLName xml.Name `xml:"cloud"`
+	XMLName xml.Name `xml:"https://www.rssboard.org/rss-specification cloud"`
 
 	// Domain is the domain name or IP address of the cloud
 	//
@@ -370,28 +371,28 @@ type Cloud struct {
 //
 // https://cyber.harvard.edu/rss/rss.html#ltimagegtSubelementOfLtchannelgt
 type Image struct {
-	XMLName xml.Name `xml:"image"`
+	XMLName xml.Name `xml:"https://www.rssboard.org/rss-specification image"`
 
 	// URL (required) is the URL of a GIF, JPEG or PNG image that represents the channel
-	URL string `xml:"url"`
+	URL string `xml:"https://www.rssboard.org/rss-specification url"`
 
 	// Title (required) describes the image, it's used in the ALT attribute of the HTML
 	// <img> tag when the channel is rendered in HTML.
-	Title string `xml:"title"`
+	Title string `xml:"https://www.rssboard.org/rss-specification title"`
 
 	// Link (required) is the URL of the site, when the channel is rendered, the image is
 	// a link to the site. (Note, in practice the image <title> and <link> should have the same value as the channel's <title> and <link>.
-	Link string `xml:"link"`
+	Link string `xml:"https://www.rssboard.org/rss-specification link"`
 
 	// Width of image in pixels. Default 88, max 144. Optional
-	Width int `xml:"width,omitempty"`
+	Width int `xml:"https://www.rssboard.org/rss-specification width,omitempty"`
 
 	// Height of image in pixels. Default 31, max 400. Optional
-	Height int `xml:"height,omitempty"`
+	Height int `xml:"https://www.rssboard.org/rss-specification height,omitempty"`
 
 	// Description contains text that is included in the TITLE attribute of the
 	// link formed around the image in the HTML rendering. Optional.
-	Description string `xml:"description,omitempty"`
+	Description string `xml:"https://www.rssboard.org/rss-specification description,omitempty"`
 }
 
 // TextInput: The purpose of the <textInput> element is something of a
@@ -400,20 +401,20 @@ type Image struct {
 //
 // https://cyber.harvard.edu/rss/rss.html#lttextinputgtSubelementOfLtchannelgt
 type TextInput struct {
-	XMLName xml.Name `xml:"textInput"`
+	XMLName xml.Name `xml:"https://www.rssboard.org/rss-specification textInput"`
 
 	// Title (required) is the label of the Submit button in the text input area.
-	Title string `xml:"title"`
+	Title string `xml:"https://www.rssboard.org/rss-specification title"`
 
 	// Description (required) explains the text input area.
-	Description string `xml:"description"`
+	Description string `xml:"https://www.rssboard.org/rss-specification description"`
 
 	// Name (required) of the text object in the text input area.
 	// <img> tag when the channel is rendered in HTML.
-	Name string `xml:"name"`
+	Name string `xml:"https://www.rssboard.org/rss-specification name"`
 
 	// Link (required) is the URL of the CGI script that processes text input requests.
-	Link string `xml:"link"`
+	Link string `xml:"https://www.rssboard.org/rss-specification link"`
 }
 
 // SkipHours is an XML element that contains up to 24 <hour>
@@ -425,9 +426,9 @@ type TextInput struct {
 //
 // https://cyber.harvard.edu/rss/skipHoursDays.html#skiphours
 type SkipHours struct {
-	XMLName xml.Name `xml:"skipHours"`
+	XMLName xml.Name `xml:"https://www.rssboard.org/rss-specification skipHours"`
 
-	Hours []string `xml:"hour"`
+	Hours []string `xml:"https://www.rssboard.org/rss-specification hour"`
 }
 
 // Values a <day> element can have in RSSChannelSkipDays
@@ -450,9 +451,9 @@ const (
 //
 // https://cyber.harvard.edu/rss/skipHoursDays.html#skipdays
 type SkipDays struct {
-	XMLName xml.Name `xml:"skipDays"`
+	XMLName xml.Name `xml:"https://www.rssboard.org/rss-specification skipDays"`
 
-	Days []SkipDay `xml:"day"`
+	Days []SkipDay `xml:"https://www.rssboard.org/rss-specification day"`
 }
 
 // # RSS 2.0
@@ -466,7 +467,7 @@ type SkipDays struct {
 //
 // [examples]: https://cyber.harvard.edu/rss/encodingDescriptions.html
 type Item struct {
-	XMLName xml.Name `xml:"item"`
+	XMLName xml.Name `xml:"https://www.rssboard.org/rss-specification item"`
 
 	// # RSS 2.0 (optional, one of title or description must be present)
 	//
@@ -488,7 +489,7 @@ type Item struct {
 	// Separating episode and season number from the title makes it possible for
 	// Apple to easily index and order content from all shows.
 	//
-	Title string `xml:"title,omitempty"`
+	Title string `xml:"https://www.rssboard.org/rss-specification title,omitempty"`
 
 	// # RSS 2.0 (optional)
 	//
@@ -510,7 +511,7 @@ type Item struct {
 	//   https://www.example.com/podcast
 	//  </link>
 	//
-	Link string `xml:"link,omitempty"`
+	Link string `xml:"https://www.rssboard.org/rss-specification link,omitempty"`
 
 	// # RSS 2.0 (optional, one of title or description must be present)
 	//
@@ -536,7 +537,7 @@ type Item struct {
 	// 	 <a href="http://www.apple.com">Apple</a>
 	//  ]]>
 	//
-	Description *Description `xml:"description"`
+	Description *Description `xml:"https://www.rssboard.org/rss-specification description"`
 
 	// # RSS 2.0 (optional)
 	//
@@ -547,7 +548,7 @@ type Item struct {
 	// Example:
 	//  oprah\@oxygen.net
 	//
-	Author string `xml:"author,omitempty"`
+	Author string `xml:"https://www.rssboard.org/rss-specification author,omitempty"`
 
 	// # RSS 2.0 (optional)
 	//
@@ -555,7 +556,7 @@ type Item struct {
 	//
 	// [More]: https://www.rssboard.org/rss-specification#ltcategorygtSubelementOfLtitemgt
 	//
-	Categories []Category `xml:"category,omitempty"`
+	Categories []Category `xml:"https://www.rssboard.org/rss-specification category,omitempty"`
 
 	// # RSS 2.0 (optional)
 	//
@@ -563,9 +564,10 @@ type Item struct {
 	//
 	// [More]: https://www.rssboard.org/rss-specification#ltcommentsgtSubelementOfLtitemgt
 	//
-	Comments string `xml:"url,omitempty"`
+	Comments string `xml:"https://www.rssboard.org/rss-specification url,omitempty"`
 
 	// # RSS 2.0 (optional)
+	//
 	// Describes a media object that is attached to the item. [More].
 	//
 	// [More]: https://www.rssboard.org/rss-specification#ltenclosuregtSubelementOfLtitemgt
@@ -573,10 +575,10 @@ type Item struct {
 	// # Apple Podcasts (required)
 	// 	The episode content, file size, and file type information.
 	//
-	Enclosure *Enclosure `xml:"enclosure,omitempty"`
+	Enclosure *Enclosure `xml:"https://www.rssboard.org/rss-specification enclosure,omitempty"`
 
 	// GUID is a string that uniquely identifies the item.
-	GUID *GUID `xml:"guid,omitempty"`
+	GUID *GUID `xml:"https://www.rssboard.org/rss-specification guid,omitempty"`
 
 	// # RSS 2.0 (optional)
 	//
@@ -601,12 +603,12 @@ type Item struct {
 	//  Sat, 01 Apr 2023 19:00:00 GMT.
 	//
 	//
-	PubDate RFC2822Date `xml:"pubDate,omitEmpty"`
+	PubDate RFC2822Date `xml:"https://www.rssboard.org/rss-specification pubDate,omitEmpty"`
 
 	// # RSS 2.0 (optional)
 	//
 	// The RSS channel that the item came from.
-	Source *Source `xml:"source,omitempty"`
+	Source *Source `xml:"https://www.rssboard.org/rss-specification source,omitempty"`
 }
 
 // Category is an optional sub-element of <item>.
@@ -629,7 +631,7 @@ type Item struct {
 //
 // https://www.rssboard.org/rss-specification#ltcategorygtSubelementOfLtitemgt
 type Category struct {
-	XMLName xml.Name `xml:"category"`
+	XMLName xml.Name `xml:"https://www.rssboard.org/rss-specification category"`
 	Value   string   `xml:",chardata"`
 
 	// Domain is optional
@@ -653,11 +655,11 @@ type Category struct {
 // of an aggregator. It should be generated automatically when forwarding an
 // item from an aggregator to a weblog authoring tool.
 type Source struct {
-	XMLName xml.Name `xml:"source"`
+	XMLName xml.Name `xml:"https://www.rssboard.org/rss-specification source"`
 	Value   string   `xml:",chardata"`
 
 	// URL is required
-	URL string `xml:"url,omitempty"`
+	URL string `xml:"https://www.rssboard.org/rss-specification url,omitempty"`
 }
 
 // # RSS 2.0
@@ -692,7 +694,8 @@ type Source struct {
 //	 type="audio/mpeg
 //	/>
 type Enclosure struct {
-	// # RSS 2.0
+	XMLName xml.Name `xml:"https://www.rssboard.org/rss-specification enclosure"`
+	// # RSS 2.0 (required)
 	//
 	// URL says where the enclosure is located. The url must be an http url.
 	//
@@ -708,9 +711,9 @@ type Enclosure struct {
 	//     choose File > Get Info and refer to the size field).
 	//
 	//   - Type.
-	URL string `xml:"url"`
+	URL string `xml:"url,attr"`
 
-	// # RSS 2.0
+	// # RSS 2.0 (required)
 	//
 	// Length says how big it is in bytes
 	//
@@ -720,9 +723,9 @@ type Enclosure struct {
 	//  information in the properties of your podcast file (on a Mac, choose
 	// File > Get Info and refer to the size field).
 	//
-	Length int `xml:"length"`
+	Length int `xml:"length,attr"`
 
-	// # RSS 2.0
+	// # RSS 2.0 (required)
 	//
 	// Type says what its type is, a standard MIME type.
 	//
@@ -737,7 +740,7 @@ type Enclosure struct {
 	//  - video/mp4
 	//  - video/x-m4v
 	//  - application/pdf
-	Type string `xml:"type"`
+	Type string `xml:"type,attr"`
 }
 
 // GUID  is an optional sub-element of <item>.
@@ -752,7 +755,7 @@ type Enclosure struct {
 // as a string. It's up to the source of the feed to establish the
 // uniqueness of the string.
 type GUID struct {
-	XMLName xml.Name `xml:"guid"`
+	XMLName xml.Name `xml:"https://www.rssboard.org/rss-specification guid"`
 	Value   string   `xml:",chardata"`
 
 	// If the guid element has an attribute named isPermaLink with a value of
@@ -766,4 +769,15 @@ type GUID struct {
 	// false, the guid may not be assumed to be a url, or a url to anything in
 	// particular.
 	IsPermaLink *bool `xml:"isPermaLink,attr,omitempty"`
+}
+
+// GetDecoder is a helper method to get an encoding/xml encoder with the default
+// namespace set to https://www.rssboard.org/rss-specification.
+//
+// You probably want to decode XML files that don't specify a namespace, so you
+// need to specify a default for go's XML decoder.
+func GetDecoder(r io.Reader) *xml.Decoder {
+	decoder := xml.NewDecoder(r)
+	decoder.DefaultSpace = "https://www.rssboard.org/rss-specification"
+	return decoder
 }
