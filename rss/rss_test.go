@@ -2,8 +2,11 @@ package rss
 
 import (
 	"bytes"
+	"encoding/json"
 	"encoding/xml"
+	"fmt"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -66,4 +69,120 @@ func TestMarshalRoundTrip(t *testing.T) {
 			os.WriteFile("feed.xml", marshalled, 0644)
 		})
 	}
+}
+
+func ExampleRSS_decode() {
+	var feedXML = `
+	<rss xmlns="https://www.rssboard.org/rss-specification" version="2.0">
+        <channel xmlns="https://www.rssboard.org/rss-specification">
+                <title xmlns="https://www.rssboard.org/rss-specification">My Awesome Feed</title>
+                <link xmlns="https://www.rssboard.org/rss-specification">https://example.com</link>
+                <description xmlns="https://www.rssboard.org/rss-specification"><![CDATA[<b>AN AMAZING FEED</b>]]></description>
+                <item xmlns="https://www.rssboard.org/rss-specification">
+                        <title xmlns="https://www.rssboard.org/rss-specification">Post 1</title>
+                        <pubDate xmlns="https://www.rssboard.org/rss-specification"></pubDate>
+                </item>
+        </channel>
+</rss>`
+
+	// There is a helper for this boilerplate rss.GetDecoder
+	decoder := xml.NewDecoder(strings.NewReader(feedXML))
+	decoder.DefaultSpace = "https://www.rssboard.org/rss-specification"
+
+	var decoded RSS
+	decoder.Decode(&decoded)
+
+	var jsonBytes, _ = json.MarshalIndent(decoded, "", "\t")
+	fmt.Print(string(jsonBytes))
+
+	// Output: {
+	//	"XMLName": {
+	//		"Space": "https://www.rssboard.org/rss-specification",
+	//		"Local": "rss"
+	//	},
+	//	"Channel": {
+	//		"XMLName": {
+	//			"Space": "https://www.rssboard.org/rss-specification",
+	//			"Local": "channel"
+	//		},
+	//		"Title": "My Awesome Feed",
+	//		"Link": "https://example.com",
+	//		"Description": {
+	//			"XMLName": {
+	//				"Space": "https://www.rssboard.org/rss-specification",
+	//				"Local": "description"
+	//			},
+	//			"Value": "\u003cb\u003eAN AMAZING FEED\u003c/b\u003e"
+	//		},
+	//		"Language": "",
+	//		"Copyright": "",
+	//		"ManagingEditor": "",
+	//		"WebMaster": "",
+	//		"PubDate": "",
+	//		"LastBuildDate": "",
+	//		"Categories": null,
+	//		"Generator": "",
+	//		"Docs": "",
+	//		"Cloud": null,
+	//		"TTL": 0,
+	//		"Image": null,
+	//		"Rating": "",
+	//		"TextInput": null,
+	//		"SkipHours": null,
+	//		"SkipDays": null,
+	//		"Items": [
+	//			{
+	//				"XMLName": {
+	//					"Space": "https://www.rssboard.org/rss-specification",
+	//					"Local": "item"
+	//				},
+	//				"Title": "Post 1",
+	//				"Link": "",
+	//				"Description": null,
+	//				"Author": "",
+	//				"Categories": null,
+	//				"Comments": "",
+	//				"Enclosure": null,
+	//				"GUID": null,
+	//				"PubDate": "",
+	//				"Source": null
+	//			}
+	//		]
+	//	},
+	//	"Version": "2.0"
+	// }
+}
+
+func ExampleRSS_encode() {
+	var feed = RSS{
+		Version: RSSVersion,
+		Channel: Channel{
+			Title: "My Awesome Feed",
+			Link:  "https://example.com",
+			Description: Description{
+				Value: "<b>AN AMAZING FEED</b>",
+			},
+			Items: []Item{
+				{
+					Title: "Post 1",
+				},
+			},
+		},
+	}
+
+	output, _ := xml.MarshalIndent(&feed, "", "\t")
+
+	fmt.Print(string(output))
+
+	// Output: <rss xmlns="https://www.rssboard.org/rss-specification" version="2.0">
+	//	<channel xmlns="https://www.rssboard.org/rss-specification">
+	//		<title xmlns="https://www.rssboard.org/rss-specification">My Awesome Feed</title>
+	//		<link xmlns="https://www.rssboard.org/rss-specification">https://example.com</link>
+	//		<description xmlns="https://www.rssboard.org/rss-specification"><![CDATA[<b>AN AMAZING FEED</b>]]></description>
+	//		<item xmlns="https://www.rssboard.org/rss-specification">
+	//			<title xmlns="https://www.rssboard.org/rss-specification">Post 1</title>
+	//			<pubDate xmlns="https://www.rssboard.org/rss-specification"></pubDate>
+	//		</item>
+	//	</channel>
+	// </rss>
 }

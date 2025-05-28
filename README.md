@@ -19,13 +19,55 @@ This package aims to be:
 * Not stringly typed
 * Include snippets from the standards docs in the godocs so you know what you
   need to include
+* No dependencies (there is one test dependency)
 
 ## Examples
 
 ### Generate a podcast
 
-### Parse a well-formed podcast
+```go
+pod := RSSPodcast{
+  Version: rss.RSSVersion,
+  Channel: Podcast{
+    Channel: rss.Channel{
+      Title: "My Awesome Feed",
+      Link:  "https://example.com",
+      Description: rss.Description{
+        Value: "<b>AN AMAZING FEED</b>",
+      },
+    },
+    ItunesAuthor: "Dan Jones",
+    Items: []Episode{
+      {
+        Item: rss.Item{
+          Title: "Episode 1: The Pod Awakens",
+          Enclosure: &rss.Enclosure{
+            URL:    "https://example.com/ep01.mp3",
+            Length: 123,
+            Type:   "audio/mpeg",
+          },
+        },
+      },
+    },
+    PodcastPeople: []PodcastPerson{
+      {
+        PersonName: "Steve",
+      },
+    },
+  },
+}
 
+output, _ := xml.MarshalIndent(pod, "", "\t")
+```
+
+### Parse a well-formed podcast
+```go
+decoder := xml.NewDecoder(strings.NewReader(feedXML))
+decoder.DefaultSpace = "https://www.rssboard.org/rss-specification"
+
+var decoded RSSPodcast
+decoder.Decode(&decoded)
+```
 
 ## RSS Package
 

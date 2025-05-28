@@ -1,13 +1,20 @@
-// Package rss implements basic types for RSS 2.0 feeds. You should be able to
-// use this to generate and parse simple RSS feeds if you wish.
+// Package rss implements basic types for serializing and deserializing RSS 2.0
+// feeds.
 //
-// https://www.rssboard.org/rss-specification
+// You should be able to use this to generate and parse simple RSS feeds
+// if you wish.
 //
-// # Any Apple documentation is also included
+// You are probably most interested in [RSS] and [Item].
 //
-// # Copyright
+// Documentation is pulled from
 //
-// Many of these docstrings are taken from the RSS Spec, which is
+//   - [The official RSS docs]
+//   - [Apple's podcasting docs]
+//
+// # Copyright Notice
+//
+// Many of these docstrings are taken from the RSS Spec, which is under a CC 1.0 License
+//
 //   - License Link: https://creativecommons.org/licenses/by-sa/1.0/
 //   - Changes were made
 //   - Creator: RSS Advisory Board
@@ -19,6 +26,9 @@
 // terms of the Creative Commons Attribution/Share Alike license. It is a
 // derivative work of an original document titled RSS 2.0 published by the
 // Berkman Klein Center for Internet & Society authored by Dave Winer.
+//
+// [The official RSS docs]: https://www.rssboard.org/rss-specification
+// [Apple's podcasting docs]: https://help.apple.com/itc/podcasts_connect/#/itcb54353390
 package rss
 
 import (

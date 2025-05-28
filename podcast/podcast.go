@@ -1,6 +1,18 @@
-// podcast package
+// podcast package allows you to generate and parse well formed podcast feeds.
+//
+// Documentation is pulled from
+//
+//   - [The official RSS docs] https://www.rssboard.org/rss-specification
+//   - [Apple's podcasting docs]
+//   - [The podcast namespace spec]
+//
+// You are probably most in [Podcast] and [Episode] and their examples.
 //
 // Types beginning with "Podcast" are from the podcasting 2.0 spec
+//
+// [The official RSS docs]: https://www.rssboard.org/rss-specification
+// [Apple's podcasting docs]: https://help.apple.com/itc/podcasts_connect/#/itcb54353390
+// [The podcast namespace spec]: https://podcastindex.org/namespace/1.0
 package podcast
 
 import (
@@ -725,13 +737,13 @@ type PodcastSoundbite struct {
 	// and 120 seconds)
 	Duration float32 `xml:"duration,attr"`
 
-	// This is a free form string from the podcast creator to specify a title
-	// for the soundbite. If the podcaster does not provide a value for the
-	// soundbite title, then leave the value blank, and podcast apps can decide
-	// to use the episode title or some other placeholder value in its place.
-	// Please do not exceed 128 characters for the node value or it may be
-	// truncated by aggregators.
-	Value string `xml:",chardata"`
+	// SoundbiteTitle (optional) is a free form string from the podcast creator
+	// to specify a title for the soundbite. If the podcaster does not provide
+	// a value for the soundbite title, then leave the value blank, and podcast
+	// apps can decide to use the episode title or some other placeholder value
+	// in its place. Please do not exceed 128 characters for the node value or
+	// it may be truncated by aggregators.
+	SoundbiteTitle string `xml:",chardata"`
 }
 
 // PodcastPerson specifies a person of interest to the podcast. It is primarily
@@ -745,7 +757,10 @@ type PodcastSoundbite struct {
 type PodcastPerson struct {
 	XMLName xml.Name `xml:"https://podcastindex.org/namespace/1.0 person"`
 
-	Text string `xml:",chardata"`
+	// PersonName (required) is the full name or alias of the person.
+	// Please do not exceed 128 characters for the node value or it may be
+	// truncated by aggregators.
+	PersonName string `xml:",chardata"`
 
 	// Group (optional): This should be a reference to an official group within
 	// the Podcast Taxonomy Project list. If group is not present, then "cast"
@@ -783,12 +798,12 @@ type PodcastPerson struct {
 type PodcastLocation struct {
 	XMLName xml.Name `xml:"https://podcastindex.org/namespace/1.0 location"`
 
-	// Text (required) is a free-form string meant to be a human readable
+	// LocationName (required) is a free-form string meant to be a human readable
 	// location. It may conform to conventional location verbiage
 	// (i.e. "Austin, TX"), but it  shouldn't be depended on to be parseable in
 	// any specific way. This value cannot be blank. Please do not exceed 128
 	// characters for the node value or it may be truncated by aggregators.
-	Text string `xml:",chardata"`
+	LocationName string `xml:",chardata"`
 
 	// Geo (recommended): This is a latitude and longitude given in "geo"
 	// notation (i.e. "geo:30.2672,97.7431").
@@ -808,8 +823,9 @@ type PodcastLocation struct {
 type PodcastSeason struct {
 	XMLName xml.Name `xml:"https://podcastindex.org/namespace/1.0 season"`
 
-	// Value (required) value is an integer, and represents the season "number"
-	Value int `xml:",chardata"`
+	// SeasonNumber (required) value is an integer, and represents the season
+	// "number"
+	SeasonNumber int `xml:",chardata"`
 
 	// Name (optional) of the season. If this attribute is present,
 	// applications are free to not show the season number to the end user,
@@ -828,7 +844,7 @@ type PodcastSeason struct {
 type PodcastEpisode struct {
 	XMLName xml.Name `xml:"https://podcastindex.org/namespace/1.0 episode"`
 
-	// Value (required): the node value is a decimal number
+	// EpisodeNumber (required): the node value is a decimal number
 	//
 	// The episode numbers are decimal, so numbering such as 100.5 is acceptable
 	//  if there was a special mini-episode published between two other
@@ -836,7 +852,7 @@ type PodcastEpisode struct {
 	// chronological sorting, while the display attribute could specify an
 	// alternate special "number" (a moniker) to display for the episode in a
 	// podcast player app UI.
-	Value float32 `xml:",chardata"`
+	EpisodeNumber float32 `xml:",chardata"`
 
 	// Display (optional): If this attribute is present, podcast apps and
 	// aggregators are encouraged to show its value instead of the purely
@@ -858,11 +874,11 @@ type PodcastEpisode struct {
 type PodcastTrailer struct {
 	XMLName xml.Name `xml:"https://podcastindex.org/namespace/1.0 trailer"`
 
-	// Text (required) is the title of the trailer.
+	// TrailerTitle (required) is the title of the trailer.
 	//
 	// Please do not exceed 128 characters for the node value or it may be
 	// truncated by aggregators.
-	Text string `xml:",chardata"`
+	TrailerTitle string `xml:",chardata"`
 
 	// (required) Pubdate is the date the trailer was published. This attribute is an
 	// RFC2822 formatted date string.
@@ -903,7 +919,7 @@ type PodcastTrailer struct {
 type PodcastLicense struct {
 	XMLName xml.Name `xml:"https://podcastindex.org/namespace/1.0 license"`
 
-	// Value (required) must be a lower-cased reference to a license
+	// LicenseID (required) must be a lower-cased reference to a license
 	// "identifier" defined in the [SPDX License List] file if the license being
 	// used is a well-known, public license. Or, if it is a custom license,
 	// it must be a free form abbreviation of the name of the license as you
@@ -911,7 +927,7 @@ type PodcastLicense struct {
 	// value or it may be truncated by aggregators.
 	//
 	// [SPDX License List]: https://spdx.org/licenses/
-	Value string `xml:",chardata"`
+	LicenseID string `xml:",chardata"`
 
 	// URL (optional): This is a url that points to the full, legal language of
 	// the license being referenced. This attribute is optional for well-known
@@ -1201,9 +1217,9 @@ type ISO8601Timestamp string
 type PodcastContentLink struct {
 	XMLName xml.Name `xml:"https://podcastindex.org/namespace/1.0 contentLink"`
 
-	// Value is a free form string meant to explain to the user where this
+	// LinkTitle is a free form string meant to explain to the user where this
 	// content link points and/or the nature of it's purpose.
-	Value string `xml:",chardata"`
+	LinkTitle string `xml:",chardata"`
 
 	// Href (required): A string that is the uri pointing to content outside of
 	// the application.
@@ -1267,10 +1283,10 @@ type PodcastBlock struct {
 type PodcastUpdateFrequency struct {
 	XMLName xml.Name `xml:"https://podcastindex.org/namespace/1.0 updateFrequency"`
 
-	// Value is a free-form string, which might be displayed alongside other
+	// UpdateFrequencyText is a free-form string, which might be displayed alongside other
 	// information about the podcast. Please do not exceed 128 characters
 	// for the node value or it may be truncated by aggregators.
-	Value string `xml:,chardata`
+	UpdateFrequencyText string `xml:",chardata"`
 
 	// Complete (optional): Boolean specifying if the podcast has no intention
 	// to release further episodes. If not set, this should be assumed to be
